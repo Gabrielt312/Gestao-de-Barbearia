@@ -1,8 +1,10 @@
 import java.io.*;
 import java.util.ArrayList;
 
+// Classe para salvar e carregar os arquivos txt.
 public class Arquivos {
 
+    // Salva a lista no arquivo.
     public static void salvar(String arquivo, ArrayList<?> lista) {
         try {
             FileWriter fw = new FileWriter(arquivo);
@@ -13,6 +15,7 @@ public class Arquivos {
         }
     }
 
+    // Le o arquivo e devolve as linhas.
     public static ArrayList<String> carregar(String arquivo) {
         ArrayList<String> linhas = new ArrayList<>();
         try {
@@ -21,7 +24,15 @@ public class Arquivos {
             while ((linha = br.readLine()) != null)
                 if (!linha.trim().isEmpty()) linhas.add(linha);
             br.close();
-        } catch (IOException e) { /* arquivo ainda nao existe */ }
+        } catch (IOException e) {
+            // Se ainda nao tiver arquivo, continua normal.
+        }
         return linhas;
+    }
+
+    // Texto da classe.
+    @Override
+    public String toString() {
+        return "Arquivos | leitura e escrita em .txt";
     }
 }

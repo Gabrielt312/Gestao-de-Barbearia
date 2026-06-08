@@ -1,25 +1,32 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// Classe principal do programa.
 public class Main {
 
-    static final String ARQ_CLIENTES = "clientes.txt";
-    static final String ARQ_FUNCIONARIOS = "funcionarios.txt";
-    static final String ARQ_SERVICOS = "servicos.txt";
-    static final String ARQ_AGENDAMENTOS = "agendamentos.txt";
+    // Nome dos arquivos.
+    private static final String ARQ_CLIENTES = "clientes.txt";
+    private static final String ARQ_FUNCIONARIOS = "funcionarios.txt";
+    private static final String ARQ_SERVICOS = "servicos.txt";
+    private static final String ARQ_AGENDAMENTOS = "agendamentos.txt";
 
-    static Scanner sc = new Scanner(System.in);
-    static ArrayList<Cliente>     clientes     = new ArrayList<>();
-    static ArrayList<Funcionario> funcionarios = new ArrayList<>();
-    static ArrayList<Servico>     servicos     = new ArrayList<>();
-    static ArrayList<Agendamento> agendamentos = new ArrayList<>();
+    // Entrada de dados.
+    private static Scanner sc = new Scanner(System.in);
 
+    // Listas usadas no sistema.
+    private static ArrayList<Cliente>     clientes     = new ArrayList<>();
+    private static ArrayList<Funcionario> funcionarios = new ArrayList<>();
+    private static ArrayList<Servico>     servicos     = new ArrayList<>();
+    private static ArrayList<Agendamento> agendamentos = new ArrayList<>();
+
+    // Comeca o programa.
     public static void main(String[] args) {
 
-        // Login — maximo 3 tentativas
+        // Faz login antes de entrar no menu.
         boolean logado = false;
         while (!logado) logado = Login.entrar();
 
+        // Carrega dados salvos.
         carregarTudo();
 
         int op;
@@ -34,6 +41,7 @@ public class Main {
             System.out.print("Opcao: ");
             op = sc.nextInt();
 
+            // Escolhe o menu pela opcao.
             switch (op) {
                 case 1: menuClientes();     break;
                 case 2: menuFuncionarios(); break;
@@ -47,6 +55,8 @@ public class Main {
     }
 
     // =================== CLIENTES ===================
+
+    // Menu dos clientes.
     static void menuClientes() {
         System.out.println("\n-- CLIENTES --");
         System.out.println("1. Cadastrar  2. Listar  3. Remover  0. Voltar");
@@ -58,6 +68,7 @@ public class Main {
         System.out.println();
     }
 
+    // Cadastra cliente.
     static void cadastrarCliente() {
         sc.nextLine();
         System.out.print("Nome: "); String nome = sc.nextLine();
@@ -67,6 +78,8 @@ public class Main {
     }
 
     // =================== FUNCIONARIOS ===================
+
+    // Menu dos funcionarios.
     static void menuFuncionarios() {
         System.out.println("\n-- FUNCIONARIOS --");
         System.out.println("1. Cadastrar  2. Listar  3. Remover  0. Voltar");
@@ -78,6 +91,7 @@ public class Main {
         System.out.println();
     }
 
+    // Cadastra funcionario.
     static void cadastrarFuncionario() {
         sc.nextLine();
         System.out.print("Nome: "); String nome = sc.nextLine();
@@ -88,6 +102,8 @@ public class Main {
     }
 
     // =================== SERVICOS ===================
+
+    // Menu dos servicos.
     static void menuServicos() {
         System.out.println("\n-- SERVICOS --");
         System.out.println("1. Cadastrar  2. Listar  3. Remover  0. Voltar");
@@ -99,6 +115,7 @@ public class Main {
         System.out.println();
     }
 
+    // Cadastra servico.
     static void cadastrarServico() {
         sc.nextLine();
         System.out.print("Nome do servico: "); String nome = sc.nextLine();
@@ -108,6 +125,8 @@ public class Main {
     }
 
     // =================== AGENDAMENTOS ===================
+
+    // Menu dos agendamentos.
     static void menuAgendamentos() {
         System.out.println("\n-- AGENDAMENTOS --");
         System.out.println("1. Criar  2. Listar  3. Concluir  4. Cancelar  0. Voltar");
@@ -120,23 +139,24 @@ public class Main {
         System.out.println();
     }
 
+    // Cria um agendamento.
     static void criarAgendamento() {
         if (clientes.isEmpty() || funcionarios.isEmpty() || servicos.isEmpty()) {
             System.out.println("Cadastre clientes, funcionarios e servicos antes de agendar.");
             return;
         }
 
-        // Selecionar cliente
+        // Escolhe o cliente.
         listar(clientes, "Clientes");
         System.out.print("Numero do cliente: ");
         int ic = sc.nextInt() - 1;
 
-        // Selecionar funcionario
+        // Escolhe o funcionario.
         listar(funcionarios, "Funcionarios");
         System.out.print("Numero do funcionario: ");
         int ifun = sc.nextInt() - 1;
 
-        // Selecionar servico
+        // Escolhe o servico.
         listar(servicos, "Servicos");
         System.out.print("Numero do servico: ");
         int isv = sc.nextInt() - 1;
@@ -145,12 +165,14 @@ public class Main {
         System.out.print("Data (dd/mm/aaaa): ");
         String data = sc.nextLine();
 
+        // Confere se os numeros existem.
         if (ic < 0 || ic >= clientes.size() || ifun < 0 || ifun >= funcionarios.size()
                 || isv < 0 || isv >= servicos.size()) {
             System.out.println("Selecao invalida.");
             return;
         }
 
+        // Junta cliente, funcionario e servico no agendamento.
         Agendamento ag = new Agendamento(
             clientes.get(ic).getNome(),
             funcionarios.get(ifun).getNome(),
@@ -162,6 +184,7 @@ public class Main {
         System.out.println("Agendamento criado! ID: " + ag.getId());
     }
 
+    // Muda status para concluido ou cancelado.
     static void mudarStatus(String novoStatus) {
         listar(agendamentos, "Agendamentos");
         if (agendamentos.isEmpty()) return;
@@ -173,6 +196,8 @@ public class Main {
     }
 
     // =================== RELATORIO ===================
+
+    // Mostra o relatorio geral.
     static void relatorio() {
         System.out.println("\n=== RELATORIO GERAL ===");
         System.out.println("Clientes: "     + clientes.size());
@@ -191,6 +216,8 @@ public class Main {
     }
 
     // =================== UTILITARIOS ===================
+
+    // Lista qualquer lista recebida.
     static <T> void listar(ArrayList<T> lista, String titulo) {
         System.out.println("\n-- " + titulo + " --");
         if (lista.isEmpty()) { System.out.println("(vazio)"); return; }
@@ -198,6 +225,7 @@ public class Main {
             System.out.println((i + 1) + ". " + lista.get(i));
     }
 
+    // Remove um item da lista.
     static <T> void remover(ArrayList<T> lista, String tipo) {
         listar(lista, tipo);
         if (lista.isEmpty()) return;
@@ -211,6 +239,7 @@ public class Main {
         }
     }
 
+    // Salva todas as listas.
     static void salvarTudo() {
         Arquivos.salvar(ARQ_CLIENTES, clientes);
         Arquivos.salvar(ARQ_FUNCIONARIOS, funcionarios);
@@ -219,12 +248,14 @@ public class Main {
         System.out.println("Dados salvos.");
     }
 
+    // Carrega todas as listas.
     static void carregarTudo() {
         clientes.clear();
         funcionarios.clear();
         servicos.clear();
         agendamentos.clear();
 
+        // Lendo cada arquivo.
         for (String linha : Arquivos.carregar(ARQ_CLIENTES)) carregarCliente(linha);
         for (String linha : Arquivos.carregar(ARQ_FUNCIONARIOS)) carregarFuncionario(linha);
         for (String linha : Arquivos.carregar(ARQ_SERVICOS)) carregarServico(linha);
@@ -233,24 +264,28 @@ public class Main {
         System.out.println("Dados carregados.");
     }
 
+    // Transforma uma linha em Cliente.
     static void carregarCliente(String linha) {
         String[] partes = linha.split("\\s*\\|\\s*");
         if (partes.length >= 3)
             clientes.add(new Cliente(partes[1], partes[2]));
     }
 
+    // Transforma uma linha em Funcionario.
     static void carregarFuncionario(String linha) {
         String[] partes = linha.split("\\s*\\|\\s*");
         if (partes.length >= 4)
             funcionarios.add(new Funcionario(partes[1], partes[2], partes[3]));
     }
 
+    // Transforma uma linha em Servico.
     static void carregarServico(String linha) {
         String[] partes = linha.split("\\s*\\|\\s*");
         if (partes.length >= 2)
             servicos.add(new Servico(partes[0], lerPreco(partes[1])));
     }
 
+    // Transforma uma linha em Agendamento.
     static void carregarAgendamento(String linha) {
         String[] partes = linha.split("\\s*\\|\\s*");
         if (partes.length >= 7) {
@@ -266,9 +301,65 @@ public class Main {
         }
     }
 
+    // Converte texto de preco para double.
     static double lerPreco(String texto) {
         String valor = texto.replace("R$", "").trim();
         if (valor.contains(",")) valor = valor.replace(".", "").replace(",", ".");
         return Double.parseDouble(valor);
+    }
+
+    // Getter do arquivo de clientes.
+    public static String getArqClientes() { return ARQ_CLIENTES; }
+
+    // Getter do arquivo de funcionarios.
+    public static String getArqFuncionarios() { return ARQ_FUNCIONARIOS; }
+
+    // Getter do arquivo de servicos.
+    public static String getArqServicos() { return ARQ_SERVICOS; }
+
+    // Getter do arquivo de agendamentos.
+    public static String getArqAgendamentos() { return ARQ_AGENDAMENTOS; }
+
+    // Getter dos clientes.
+    public static ArrayList<Cliente> getClientes() { return clientes; }
+
+    // Setter dos clientes.
+    public static void setClientes(ArrayList<Cliente> clientes) { Main.clientes = clientes; }
+
+    // Getter dos funcionarios.
+    public static ArrayList<Funcionario> getFuncionarios() { return funcionarios; }
+
+    // Setter dos funcionarios.
+    public static void setFuncionarios(ArrayList<Funcionario> funcionarios) {
+        Main.funcionarios = funcionarios;
+    }
+
+    // Getter dos servicos.
+    public static ArrayList<Servico> getServicos() { return servicos; }
+
+    // Setter dos servicos.
+    public static void setServicos(ArrayList<Servico> servicos) { Main.servicos = servicos; }
+
+    // Getter dos agendamentos.
+    public static ArrayList<Agendamento> getAgendamentos() { return agendamentos; }
+
+    // Setter dos agendamentos.
+    public static void setAgendamentos(ArrayList<Agendamento> agendamentos) {
+        Main.agendamentos = agendamentos;
+    }
+
+    // Getter do Scanner.
+    public static Scanner getSc() { return sc; }
+
+    // Setter do Scanner.
+    public static void setSc(Scanner sc) { Main.sc = sc; }
+
+    // Texto da classe.
+    @Override
+    public String toString() {
+        return "Main | Clientes: " + clientes.size()
+             + " | Funcionarios: " + funcionarios.size()
+             + " | Servicos: " + servicos.size()
+             + " | Agendamentos: " + agendamentos.size();
     }
 }
